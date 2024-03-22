@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "resrun"
+version = "0.1.0"
+requires-python = ">=3.11"
+dynamic = [
+    "dependencies",
+    "optional-dependencies",
+]
+
+[tool.setuptools.dynamic.dependencies]
+file = [
+    "requirements/base.txt",
+]
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = [
+        "requirements/dev.txt",
+    ] }
+
+[tool.ruff]
+line-length = 120
