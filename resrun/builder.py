@@ -3,6 +3,7 @@ from resrun.config import (
     ResrunBaseRepoConfig,
     ResrunBaseTaskConfig,
     ResrunCopyTaskConfig,
+    ResrunManualTaskConfig,
     ResrunTasks,
 )
 
@@ -57,6 +58,8 @@ class ResrunBuilder:
                         commands += self._build_backup_task(task)
                     case "copy":
                         commands.append(self._build_copy_task(task))
+                    case "manual":
+                        commands.append(self._build_manual_task(task))
 
         return commands
 
@@ -139,3 +142,6 @@ class ResrunBuilder:
         )
 
         return " ".join(final)
+
+    def _build_manual_task(self, task: ResrunManualTaskConfig):
+        return f"restic {task.command}"
