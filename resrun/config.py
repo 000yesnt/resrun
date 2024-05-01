@@ -1,7 +1,7 @@
 from os import PathLike
-from typing import TypeAlias
+from typing import TypeAlias, Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator, PrivateAttr
 
 
 class ResrunBaseRepoConfig(BaseModel):
@@ -12,14 +12,24 @@ class ResrunBaseRepoConfig(BaseModel):
 
 
 class ResrunBaseTaskConfig(BaseModel):
-    # TODO: Use validators to prevent type conflicts
+    _task: str = PrivateAttr("backup")
     task: str = "backup"
     repo: str = "_default"
     path: str | list[str]
     exclude_file: str | None = None
 
+    @model_validator(mode="before")
+    @classmethod
+    def check_task(cls, data: Any):
+        if isinstance(data, dict):
+            assert (
+                data.get("task") or "backup"
+            ) == cls._task.default, f"Not a {cls._task} task"
+        return data
+
 
 class ResrunForgetTaskConfig(ResrunBaseTaskConfig):
+    _task: str = PrivateAttr("forget")
     path: str | None = None
     keep_last: int | None = None
     keep_hourly: int | None = None
@@ -31,6 +41,7 @@ class ResrunForgetTaskConfig(ResrunBaseTaskConfig):
 
 
 class ResrunCopyTaskConfig(ResrunBaseTaskConfig):
+    _task: str = PrivateAttr("copy")
     copy_to: str
     path: str | None = None
     host: str | None = None
@@ -38,6 +49,7 @@ class ResrunCopyTaskConfig(ResrunBaseTaskConfig):
 
 
 class ResrunManualTaskConfig(ResrunBaseTaskConfig):
+    _task: str = PrivateAttr("manual")
     repo: str | None = None
     path: str | None = None
     command: str
