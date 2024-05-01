@@ -3,6 +3,7 @@ from resrun.config import (
     ResrunBaseRepoConfig,
     ResrunBaseTaskConfig,
     ResrunCopyTaskConfig,
+    ResrunForgetTaskConfig,
     ResrunManualTaskConfig,
     ResrunTasks,
 )
@@ -60,6 +61,8 @@ class ResrunBuilder:
                         commands.append(self._build_copy_task(task))
                     case "manual":
                         commands.append(self._build_manual_task(task))
+                    case "forget":
+                        commands.append(self._build_forget_task(task))
 
         return commands
 
@@ -78,6 +81,12 @@ class ResrunBuilder:
         if self._config.verbose:
             prefix.append("-v")
         return prefix
+
+    def _string_or_null(self, *args) -> str | None:
+        if any([not bool(a) for a in args]):
+            return None
+        else:
+            return "".join(map(str, args))
 
     def _build_backup_task(self, task: ResrunBaseTaskConfig) -> list[str]:
         prefix = self._get_global_prefixes()
@@ -142,6 +151,32 @@ class ResrunBuilder:
         )
 
         return " ".join(final)
+
+    def _build_forget_task(self, task: ResrunForgetTaskConfig):
+        prefix = self._get_global_prefixes()
+        suffix = []
+        target_repo = self._get_repo_or_default(task.repo)
+
+        # FIXME: This looks just as ugly as "str if blah else None"
+        #   The fuck do I do?
+        keeps = [
+            self._string_or_null("--keep-last ", task.keep_last),
+            self._string_or_null("--keep-hourly ", task.keep_hourly),
+            self._string_or_null("--keep-daily ", task.keep_daily),
+            self._string_or_null("--keep-weekly ", task.keep_weekly),
+            self._string_or_null("--keep-monthly ", task.keep_monthly),
+            self._string_or_null("--keep-yearly ", task.keep_yearly),
+        ]
+
+        final = (
+            ["restic", "-r", f'"{str(Path(target_repo.path))}"']
+            + prefix
+            + ["forget"]
+            + keeps
+            + suffix
+        )
+
+        return " ".join(filter(None, final))
 
     def _build_manual_task(self, task: ResrunManualTaskConfig):
         return f"restic {task.command}"
