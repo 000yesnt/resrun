@@ -71,18 +71,22 @@ class ResrunBuilder:
 
         return None
 
-    def _build_backup_task(self, task: ResrunBaseTaskConfig) -> list[str]:
+    def _get_global_prefixes(self) -> list[str]:
+        if not self.config_loaded:
+            raise Exception("Tried to get global prefixes without a loaded config!")
         prefix = []
+        if self._config.verbose:
+            prefix.append("-v")
+        return prefix
+
+    def _build_backup_task(self, task: ResrunBaseTaskConfig) -> list[str]:
+        prefix = self._get_global_prefixes()
         suffix = []
 
         target_repo = self._get_repo_or_default(task.repo)
 
         if not target_repo:
             raise ValueError("Trying to backup to unknown repo!")
-
-        # prefixes
-        if self._config.verbose:
-            prefix.append("-v")
 
         # suffixes
         _exclude_file = task.exclude_file or self._config.exclude_file or None
@@ -112,7 +116,7 @@ class ResrunBuilder:
             return [" ".join(final)]
 
     def _build_copy_task(self, task: ResrunCopyTaskConfig):
-        prefix = []
+        prefix = self._get_global_prefixes()
         suffix = []
 
         source_repo = self._get_repo_or_default(task.repo)
@@ -120,10 +124,6 @@ class ResrunBuilder:
 
         if not source_repo or not target_repo:
             raise ValueError("Trying to copy from/to an unknown repo!")
-
-        # prefixes
-        if self._config.verbose:
-            prefix.append("-v")
 
         # copying specific snapshots ignores every other param
         if task.snapshots:
