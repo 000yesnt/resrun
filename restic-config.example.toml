@@ -1,0 +1,62 @@
+verbose = true # default
+envfile = true # default, run commands with env vars from .rrun-env file
+output_logs = true # default
+
+dont_run = false # default
+exclude_file = "C:/Users/You/Documents/excludes.txt" # empty/null by default
+order = [ "backup", "forget", "copy", "manual" ] # default
+
+
+[[repos]]
+path = "D:/restic" # repo path, required
+type = "local" # currently does nothing, can be removed
+id = "my_local_repo" # required even if default is true
+default = true # only one repo can be default
+
+[[repos]]
+path = "s3:s3.amazonaws.com/bucket_name"
+type = "s3"
+id = "my_s3_repo"
+
+[[tasks]]
+# default task type is "backup"
+# repo is optional if a default is set
+path = "C:/Users/You/Pictures"
+# tasks can override exclude_file
+exclude_file = "C:/Users/You/Documents/excludes_pictures.txt"
+
+[[tasks]]
+# example with all parameters listed
+task = "backup"
+repo = "my_local_repo"
+path = "C:/Users/You/Music"
+
+[[tasks]]
+# backup task only: path can be a list
+path = [
+    "path1",
+    "path2",
+    "path3",
+    "path4"
+]
+
+[[tasks]]
+task = "forget"
+repo = "my_local_repo" # optional with default repo set, required without
+# all keep_* args are optional
+keep_last = 5
+keep_hourly = 6
+keep_daily = 7
+keep_weekly = 8
+keep_monthly = 9
+keep_yearly = 10
+
+[[tasks]]
+task = "copy"
+repo = "my_local_repo" # optional with default repo set, required without
+copy_to = "my_b2_repo" # always required
+
+[[tasks]]
+task = "manual"
+# The command is ran as-is without parsing paths. Escaping is required.
+command = "-r Z:\\restic -v backup \"Z:\\snow leopards\" --cache-dir=D:\\restic --exclude-file=C:\\Users\\Lince\\restic_excludes.txt"
