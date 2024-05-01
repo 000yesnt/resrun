@@ -113,8 +113,10 @@ class ResrunBuilder:
         if task.snapshots:
             suffix.append(" ".join(task.snapshots))
         else:
-            # TODO brain not braining rn
-            ...
+            if task.path:
+                suffix.append(f'--path "{task.path}"')
+            if task.host:
+                suffix.append(f'--host "{task.host}')
 
         final = (
             ["restic", "-r", f'"{str(Path(target_repo.path))}"']
