@@ -8,7 +8,8 @@ DO NOT RUN ON YOUR REAL RESTIC REPOSITORY without checking the generated command
 - [x] Basic config loading
 - [x] Command generation (partial)
   - [x] Backup
-  - [ ] Copy
+  - [x] Batch backup
+  - [x] Copy
   - [ ] Forget
   - [ ] Manual
 - [ ] Tests

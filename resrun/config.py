@@ -15,7 +15,7 @@ class ResrunBaseTaskConfig(BaseModel):
     # TODO: Use validators to prevent type conflicts
     task: str = "backup"
     repo: str = "_default"
-    path: str
+    path: str | list[str]
     exclude_file: str | None = None
 
 

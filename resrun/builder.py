@@ -54,7 +54,7 @@ class ResrunBuilder:
             for task in self.tasks[task_type]:
                 match task.task:
                     case "backup":
-                        commands.append(self._build_backup_task(task))
+                        commands += self._build_backup_task(task)
                     case "copy":
                         commands.append(self._build_copy_task(task))
 
@@ -68,7 +68,7 @@ class ResrunBuilder:
 
         return None
 
-    def _build_backup_task(self, task: ResrunBaseTaskConfig) -> str:
+    def _build_backup_task(self, task: ResrunBaseTaskConfig) -> list[str]:
         prefix = []
         suffix = []
 
@@ -86,14 +86,27 @@ class ResrunBuilder:
         if _exclude_file:
             suffix.append(f'--exclude-file="{Path(_exclude_file)}"')
 
-        final = (
-            ["restic", "-r", f'"{str(Path(target_repo.path))}"']
-            + prefix
-            + ["backup", f'"{str(Path(task.path))}"']
-            + suffix
-        )
+        if isinstance(task.path, list):
+            commandlist = []
+            for p in task.path:
+                command = (
+                    ["restic", "-r", f'"{str(Path(target_repo.path))}"']
+                    + prefix
+                    + ["backup", f'"{str(Path(p))}"']
+                    + suffix
+                )
+                # TODO: This looks weird.
+                commandlist.append(" ".join(command))
+            return commandlist
+        else:
+            final = (
+                ["restic", "-r", f'"{str(Path(target_repo.path))}"']
+                + prefix
+                + ["backup", f'"{str(Path(task.path))}"']
+                + suffix
+            )
 
-        return " ".join(final)
+            return [" ".join(final)]
 
     def _build_copy_task(self, task: ResrunCopyTaskConfig):
         prefix = []
