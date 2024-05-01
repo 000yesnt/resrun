@@ -10,10 +10,7 @@ DO NOT RUN ON YOUR REAL RESTIC REPOSITORY without checking the generated command
   - [x] Backup
   - [x] Batch backup
   - [x] Copy
-  - [ ] Forget
-  - [ ] Manual
+  - [x] Forget
+  - [x] Manual
 - [ ] Tests
 - [ ] Doit integration
-- [ ] Running
-    - [ ] Logging
-- [ ] Extensions
