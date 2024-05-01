@@ -27,6 +27,7 @@ class ResrunForgetTaskConfig(ResrunBaseTaskConfig):
     keep_weekly: int | None = None
     keep_monthly: int | None = None
     keep_yearly: int | None = None
+    # TODO: keep-within and keep-within-*; keep-tag
 
 
 class ResrunCopyTaskConfig(ResrunBaseTaskConfig):
