@@ -161,6 +161,9 @@ class ResrunBuilder:
         suffix = []
         target_repo = self._get_repo_or_default(task.repo)
 
+        if not target_repo:
+            raise ValueError("Trying to forget on unknown repo!")
+
         keeps = [
             self._string_or_null("--keep-last ", task.keep_last),
             self._string_or_null("--keep-hourly ", task.keep_hourly),
