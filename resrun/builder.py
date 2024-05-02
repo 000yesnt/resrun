@@ -135,6 +135,9 @@ class ResrunBuilder:
         if not source_repo or not target_repo:
             raise ValueError("Trying to copy from/to an unknown repo!")
 
+        if source_repo.id == target_repo.id:
+            raise ValueError("Trying to copy a repo to itself!")
+
         # copying specific snapshots ignores every other param
         if task.snapshots:
             suffix.append(" ".join(task.snapshots))
