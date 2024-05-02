@@ -22,6 +22,8 @@ class ResrunBuilder:
     def __init__(self): ...
 
     def load_config(self, config: dict):
+        self.repos = {}
+        self.tasks = defaultdict(list)
         self._config = ResrunBaseConfig.model_validate(config)
         if not self._config.repos:
             raise ValueError("No repositories in config!")
