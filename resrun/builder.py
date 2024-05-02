@@ -34,7 +34,7 @@ class ResrunBuilder:
             if repo.default:
                 if "_default" in self.repos:
                     # implies there's 2 defaults in the config
-                    raise Exception("More than one default present!")
+                    raise ValueError("More than one default present!")
                 self.repos["_default"] = repo
                 continue
             self.repos[repo.id] = repo
@@ -78,7 +78,7 @@ class ResrunBuilder:
 
     def _get_global_prefixes(self) -> list[str]:
         if not self.config_loaded:
-            raise Exception("Tried to get global prefixes without a loaded config!")
+            raise RuntimeError("Tried to get global prefixes without a loaded config!")
         prefix = []
         if self._config.verbose:
             prefix.append("-v")
