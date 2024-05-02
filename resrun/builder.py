@@ -140,7 +140,7 @@ class ResrunBuilder:
             suffix.append(" ".join(task.snapshots))
         else:
             if task.path:
-                suffix.append(f'--path "{task.path}"')
+                suffix.append(f'--path "{str(Path(task.path))}"')
             if task.host:
                 suffix.append(f'--host "{task.host}"')
 
