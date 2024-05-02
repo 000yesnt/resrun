@@ -76,7 +76,7 @@ class ResrunBuilder:
         return None
 
     def _get_global_prefixes(self) -> list[str]:
-        if not self.config_loaded:
+        if not self.config_loaded:  # pragma: no cover
             raise RuntimeError("Tried to get global prefixes without a loaded config!")
         prefix = []
         if self._config.verbose:
