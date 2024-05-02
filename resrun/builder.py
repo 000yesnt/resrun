@@ -36,7 +36,6 @@ class ResrunBuilder:
                     # implies there's 2 defaults in the config
                     raise ValueError("More than one default present!")
                 self.repos["_default"] = repo
-                continue
             self.repos[repo.id] = repo
 
         for task in self._config.tasks:
